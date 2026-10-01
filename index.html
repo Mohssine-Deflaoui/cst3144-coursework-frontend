@@ -4,11 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CST3144 Coursework</title>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
+
 <body>
 
-    <h1>CST3144 Coursework Frontend</h1>
-    <p>GitHub Pages is working.</p>
+    <div id="app">
+
+        <h1>{{ sitename }}</h1>
+
+        <h2>{{ lesson.subject }}</h2>
+
+        <p>Location: {{ lesson.location }}</p>
+
+        <p>Price: £{{ lesson.price }}</p>
+
+        <p>Available spaces: {{ lesson.availability }}</p>
+
+        <button
+            v-on:click="addToCart"
+            v-bind:disabled="!canAddToCart">
+            Add to Cart
+        </button>
+
+    </div>
+
+    <script>
+
+        const { createApp } = Vue
+
+        createApp({
+
+            data() {
+                return {
+
+                    sitename: "After School Activities",
+
+                    lesson: {
+                        id: 1001,
+                        subject: "Coding Club",
+                        location: "Hendon",
+                        price: 25,
+                        availability: 5
+                    },
+
+                    cart: []
+
+                }
+            },
+
+            computed: {
+
+                canAddToCart() {
+                    return this.lesson.availability > 0
+                }
+
+            },
+
+            methods: {
+
+                addToCart() {
+                    this.cart.push(this.lesson.id)
+                    this.lesson.availability--
+                }
+
+            }
+
+        }).mount("#app")
+
+    </script>
 
 </body>
 </html>
