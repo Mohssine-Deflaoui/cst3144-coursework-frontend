@@ -42,9 +42,23 @@
 
         <div v-else>
 
-            <h2>Checkout</h2>
+            <h2>Shopping Cart</h2>
 
             <p>You have {{ numberOfItems }} item(s) in your cart.</p>
+
+            <div v-for="item in cart" v-bind:key="item">
+
+                <h3>{{ lesson.subject }}</h3>
+
+                <p>Location: {{ lesson.location }}</p>
+
+                <p>Price: £{{ lesson.price }}</p>
+
+                <button v-on:click="removeFromCart(item)">
+                    Remove
+                </button>
+
+            </div>
 
         </div>
 
@@ -93,6 +107,21 @@
                 addToCart() {
                     this.cart.push(this.lesson.id)
                     this.lesson.availability--
+                },
+
+                removeFromCart(item) {
+
+                    const index = this.cart.indexOf(item)
+
+                    if (index !== -1) {
+                        this.cart.splice(index, 1)
+                        this.lesson.availability++
+                    }
+
+                    if (this.cart.length === 0) {
+                        this.displayCart = false
+                    }
+
                 },
 
                 toggleCart() {
