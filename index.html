@@ -14,21 +14,39 @@
 
         <h1>{{ sitename }}</h1>
 
-        <h2>{{ lesson.subject }}</h2>
-
-        <img src="images/new_coding_image.jpg" width="300">
-
-        <p>Location: {{ lesson.location }}</p>
-
-        <p>Price: £{{ lesson.price }}</p>
-
-        <p>Available spaces: {{ lesson.availability }}</p>
-
         <button
-            v-on:click="addToCart"
-            v-bind:disabled="!canAddToCart">
-            Add to Cart
+            v-on:click="toggleCart"
+            v-bind:disabled="numberOfItems === 0">
+            Checkout ({{ numberOfItems }})
         </button>
+
+        <div v-if="displayCart === false">
+
+            <h2>{{ lesson.subject }}</h2>
+
+            <img src="images/new_coding_image.jpg" width="300">
+
+            <p>Location: {{ lesson.location }}</p>
+
+            <p>Price: £{{ lesson.price }}</p>
+
+            <p>Available spaces: {{ lesson.availability }}</p>
+
+            <button
+                v-on:click="addToCart"
+                v-bind:disabled="!canAddToCart">
+                Add to Cart
+            </button>
+
+        </div>
+
+        <div v-else>
+
+            <h2>Checkout</h2>
+
+            <p>You have {{ numberOfItems }} item(s) in your cart.</p>
+
+        </div>
 
     </div>
 
@@ -51,7 +69,9 @@
                         availability: 5
                     },
 
-                    cart: []
+                    cart: [],
+
+                    displayCart: false
 
                 }
             },
@@ -60,6 +80,10 @@
 
                 canAddToCart() {
                     return this.lesson.availability > 0
+                },
+
+                numberOfItems() {
+                    return this.cart.length
                 }
 
             },
@@ -69,6 +93,10 @@
                 addToCart() {
                     this.cart.push(this.lesson.id)
                     this.lesson.availability--
+                },
+
+                toggleCart() {
+                    this.displayCart = !this.displayCart
                 }
 
             }
