@@ -65,10 +65,17 @@
             <h2>Checkout</h2>
 
             <p>
-                Name:
+                First Name:
                 <input
                     type="text"
                     v-model="name">
+            </p>
+
+            <p>
+                Last Name:
+                <input
+                    type="text"
+                    v-model="lastName">
             </p>
 
             <p>
@@ -115,8 +122,8 @@
 
                     displayCart: false,
 
-                    name: "",
-
+                    firstName: "",
+                    lastName: "",
                     phone: "",
 
                     orderSubmitted: false
@@ -141,6 +148,7 @@
 
                     return (
                         namePattern.test(this.name) &&
+                        namePattern.test(this.lastName) &&
                         phonePattern.test(this.phone)
                     )
 
