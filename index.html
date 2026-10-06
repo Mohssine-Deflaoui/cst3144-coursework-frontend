@@ -60,6 +60,34 @@
 
             </div>
 
+            <hr>
+
+            <h2>Checkout</h2>
+
+            <p>
+                Name:
+                <input
+                    type="text"
+                    v-model="name">
+            </p>
+
+            <p>
+                Phone:
+                <input
+                    type="text"
+                    v-model="phone">
+            </p>
+
+            <button
+                v-on:click="checkout"
+                v-bind:disabled="!canCheckout">
+                Submit Order
+            </button>
+
+            <p v-if="orderSubmitted">
+                Order submitted successfully.
+            </p>
+
         </div>
 
     </div>
@@ -85,7 +113,13 @@
 
                     cart: [],
 
-                    displayCart: false
+                    displayCart: false,
+
+                    name: "",
+
+                    phone: "",
+
+                    orderSubmitted: false
 
                 }
             },
@@ -98,6 +132,18 @@
 
                 numberOfItems() {
                     return this.cart.length
+                },
+
+                canCheckout() {
+
+                    const namePattern = /^[A-Za-z ]+$/
+                    const phonePattern = /^[0-9]+$/
+
+                    return (
+                        namePattern.test(this.name) &&
+                        phonePattern.test(this.phone)
+                    )
+
                 }
 
             },
@@ -126,6 +172,10 @@
 
                 toggleCart() {
                     this.displayCart = !this.displayCart
+                },
+
+                checkout() {
+                    this.orderSubmitted = true
                 }
 
             }
