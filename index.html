@@ -20,47 +20,72 @@
             Checkout ({{ numberOfItems }})
         </button>
 
+
+        <!-- LESSON PAGE -->
         <div v-if="displayCart === false">
 
-            <h2>{{ lesson.subject }}</h2>
+            <div
+                v-for="lesson in lessons"
+                v-bind:key="lesson.id">
 
-            <img src="images/new_coding_image.jpg" width="300">
+                <h2>{{ lesson.subject }}</h2>
 
-            <p>Location: {{ lesson.location }}</p>
+                <img
+                    v-bind:src="lesson.image"
+                    width="300">
 
-            <p>Price: £{{ lesson.price }}</p>
+                <p>Location: {{ lesson.location }}</p>
 
-            <p>Available spaces: {{ lesson.availability }}</p>
+                <p>Price: £{{ lesson.price }}</p>
 
-            <button
-                v-on:click="addToCart"
-                v-bind:disabled="!canAddToCart">
-                Add to Cart
-            </button>
+                <p>Available spaces: {{ lesson.availability }}</p>
+
+                <button
+                    v-on:click="addToCart(lesson)"
+                    v-bind:disabled="lesson.availability === 0">
+                    Add to Cart
+                </button>
+
+                <hr>
+
+            </div>
 
         </div>
 
+
+        <!-- SHOPPING CART PAGE -->
         <div v-else>
 
             <h2>Shopping Cart</h2>
 
             <p>You have {{ numberOfItems }} item(s) in your cart.</p>
 
-            <div v-for="item in cart" v-bind:key="item">
+            <div
+                v-for="(item, index) in cart"
+                v-bind:key="index">
 
-                <h3>{{ lesson.subject }}</h3>
+                <h3>{{ getLesson(item).subject }}</h3>
 
-                <p>Location: {{ lesson.location }}</p>
+                <p>
+                    Location:
+                    {{ getLesson(item).location }}
+                </p>
 
-                <p>Price: £{{ lesson.price }}</p>
+                <p>
+                    Price:
+                    £{{ getLesson(item).price }}
+                </p>
 
-                <button v-on:click="removeFromCart(item)">
+                <button v-on:click="removeFromCart(index)">
                     Remove
                 </button>
 
+                <hr>
+
             </div>
 
-            <hr>
+
+            <!-- CHECKOUT FORM -->
 
             <h2>Checkout</h2>
 
@@ -68,7 +93,7 @@
                 First Name:
                 <input
                     type="text"
-                    v-model="name">
+                    v-model="firstName">
             </p>
 
             <p>
@@ -99,6 +124,7 @@
 
     </div>
 
+
     <script>
 
         const { createApp } = Vue
@@ -106,48 +132,136 @@
         createApp({
 
             data() {
+
                 return {
 
                     sitename: "After School Activities",
 
-                    lesson: {
-                        id: 1001,
-                        subject: "Coding Club",
-                        location: "Hendon",
-                        price: 25,
-                        availability: 5
-                    },
+                    lessons: [
+
+                        {
+                            id: 1001,
+                            subject: "Coding Club",
+                            location: "Hendon",
+                            price: 25,
+                            availability: 5,
+                            image: "images/new_coding_image.jpg"
+                        },
+
+                        {
+                            id: 1002,
+                            subject: "Maths Club",
+                            location: "Colindale",
+                            price: 20,
+                            availability: 5,
+                            image: "images/new_coding_image.jpg"
+                        },
+
+                        {
+                            id: 1003,
+                            subject: "Football",
+                            location: "Hendon",
+                            price: 15,
+                            availability: 5,
+                            image: "images/new_coding_image.jpg"
+                        },
+
+                        {
+                            id: 1004,
+                            subject: "Art Club",
+                            location: "Wembley",
+                            price: 18,
+                            availability: 5,
+                            image: "images/new_coding_image.jpg"
+                        },
+
+                        {
+                            id: 1005,
+                            subject: "Science Club",
+                            location: "Finchley",
+                            price: 22,
+                            availability: 5,
+                            image: "images/new_coding_image.jpg"
+                        },
+
+                        {
+                            id: 1006,
+                            subject: "Music Lessons",
+                            location: "Harrow",
+                            price: 30,
+                            availability: 5,
+                            image: "images/new_coding_image.jpg"
+                        },
+
+                        {
+                            id: 1007,
+                            subject: "Chess Club",
+                            location: "Barnet",
+                            price: 12,
+                            availability: 5,
+                            image: "images/new_coding_image.jpg"
+                        },
+
+                        {
+                            id: 1008,
+                            subject: "Basketball",
+                            location: "Colindale",
+                            price: 16,
+                            availability: 5,
+                            image: "images/new_coding_image.jpg"
+                        },
+
+                        {
+                            id: 1009,
+                            subject: "Drama Club",
+                            location: "Hendon",
+                            price: 19,
+                            availability: 5,
+                            image: "images/new_coding_image.jpg"
+                        },
+
+                        {
+                            id: 1010,
+                            subject: "Spanish Club",
+                            location: "Wembley",
+                            price: 21,
+                            availability: 5,
+                            image: "images/new_coding_image.jpg"
+                        }
+
+                    ],
 
                     cart: [],
 
                     displayCart: false,
 
                     firstName: "",
+
                     lastName: "",
+
                     phone: "",
 
                     orderSubmitted: false
 
                 }
+
             },
 
-            computed: {
 
-                canAddToCart() {
-                    return this.lesson.availability > 0
-                },
+            computed: {
 
                 numberOfItems() {
                     return this.cart.length
                 },
 
+
                 canCheckout() {
 
-                    const namePattern = /^[A-Za-z ]+$/
+                    const namePattern = /^[A-Za-z]+$/
                     const phonePattern = /^[0-9]+$/
 
                     return (
-                        namePattern.test(this.name) &&
+                        namePattern.test(this.firstName) &&
                         namePattern.test(this.lastName) &&
                         phonePattern.test(this.phone)
                     )
@@ -156,21 +270,42 @@
 
             },
 
+
             methods: {
 
-                addToCart() {
-                    this.cart.push(this.lesson.id)
-                    this.lesson.availability--
+                addToCart(lesson) {
+
+                    if (lesson.availability > 0) {
+
+                        this.cart.push(lesson.id)
+
+                        lesson.availability--
+
+                    }
+
                 },
 
-                removeFromCart(item) {
 
-                    const index = this.cart.indexOf(item)
+                getLesson(lessonId) {
 
-                    if (index !== -1) {
-                        this.cart.splice(index, 1)
-                        this.lesson.availability++
+                    return this.lessons.find(
+                        lesson => lesson.id === lessonId
+                    )
+
+                },
+
+
+                removeFromCart(index) {
+
+                    const lessonId = this.cart[index]
+
+                    const lesson = this.getLesson(lessonId)
+
+                    if (lesson) {
+                        lesson.availability++
                     }
+
+                    this.cart.splice(index, 1)
 
                     if (this.cart.length === 0) {
                         this.displayCart = false
@@ -178,12 +313,18 @@
 
                 },
 
+
                 toggleCart() {
+
                     this.displayCart = !this.displayCart
+
                 },
 
+
                 checkout() {
+
                     this.orderSubmitted = true
+
                 }
 
             }
