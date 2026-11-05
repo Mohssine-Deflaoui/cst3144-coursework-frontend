@@ -24,8 +24,31 @@
         <!-- LESSON PAGE -->
         <div v-if="displayCart === false">
 
+            <h2>Sort Lessons</h2>
+
+            <label>
+                Sort by:
+                <select v-model="sortBy">
+                    <option value="subject">Subject</option>
+                    <option value="location">Location</option>
+                    <option value="price">Price</option>
+                    <option value="availability">Spaces</option>
+                </select>
+            </label>
+
+            <label>
+                Order:
+                <select v-model="sortOrder">
+                    <option value="ascending">Ascending</option>
+                    <option value="descending">Descending</option>
+                </select>
+            </label>
+
+            <hr>
+
+
             <div
-                v-for="lesson in lessons"
+                v-for="lesson in sortedLessons"
                 v-bind:key="lesson.id">
 
                 <h2>{{ lesson.subject }}</h2>
@@ -84,8 +107,6 @@
 
             </div>
 
-
-            <!-- CHECKOUT FORM -->
 
             <h2>Checkout</h2>
 
@@ -186,7 +207,7 @@
 
                         {
                             id: 1006,
-                            subject: "Music Lessons",
+                            subject: "Photography Lessons",
                             location: "Harrow",
                             price: 30,
                             availability: 5,
@@ -195,7 +216,7 @@
 
                         {
                             id: 1007,
-                            subject: "Chess Club",
+                            subject: "Creative  Witing",
                             location: "Barnet",
                             price: 12,
                             availability: 5,
@@ -213,7 +234,7 @@
 
                         {
                             id: 1009,
-                            subject: "Drama Club",
+                            subject: "Robotics Club",
                             location: "Hendon",
                             price: 19,
                             availability: 5,
@@ -241,7 +262,11 @@
 
                     phone: "",
 
-                    orderSubmitted: false
+                    orderSubmitted: false,
+
+                    sortBy: "subject",
+
+                    sortOrder: "ascending"
 
                 }
 
@@ -265,6 +290,44 @@
                         namePattern.test(this.lastName) &&
                         phonePattern.test(this.phone)
                     )
+
+                }, 
+
+
+                sortedLessons() {
+
+                    const lessonsCopy = [...this.lessons]
+
+                    lessonsCopy.sort((a, b) => {
+
+                        let result = 0
+
+                        if (
+                            this.sortBy === "subject" ||
+                            this.sortBy === "location"
+                        ) {
+
+                            result = a[this.sortBy].localeCompare(
+                                b[this.sortBy]
+                            )
+
+                        } else {
+
+                            result =
+                                a[this.sortBy] -
+                                b[this.sortBy]
+
+                        }
+
+                        if (this.sortOrder === "descending") {
+                            result = result * -1
+                        }
+
+                        return result
+
+                    })
+
+                    return lessonsCopy
 
                 }
 
